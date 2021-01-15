@@ -1,0 +1,47 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Using packages:
+```{r}
+library(tidyverse)
+library(haven)
+library(devtools)
+library(RColorBrewer)
+library(DT)
+library(ggplot2)
+```
+Import dataset, named as "anes_dat." Then check the dimension.
+```{r}
+anes_dat <- 
+  read_sav("C:/Users/Jingbin Cao/Documents/GitHub/Spring2021-Project1-JingbinCao/data/anes_timeseries_cdf.sav")
+dim(anes_dat)
+```
+Some basic summaries:
+```{r}
+barplot(table(anes_dat$VCF0004),
+        las=2,
+        main="Number of Respondents Over the Years")
+```
+```{r}
+anes_NAs=anes_dat%>%
+  summarise_all(list(na.mean=function(x){
+    mean(is.na(x))}))
+
+anes_NAs=data.frame(nas=unlist(t(anes_NAs)))
+
+ggplot(anes_NAs, aes(x=nas)) +
+  geom_histogram(color="black",fill="white",binwidth=0.05)+
+  labs(title="Fractions of Missing Values")
+
+```
+We just want 2016 data
+```{r}
+dat_2016 <- anes_dat %>% filter(VCF0004 == 2016)
+```
+
