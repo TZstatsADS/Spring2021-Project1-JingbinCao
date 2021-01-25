@@ -7,8 +7,23 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
-Using packages:
-```{r}
+```{r load libraries, warning=FALSE, message=FALSE, include=FALSE}
+packages.used=as.list(
+  c(
+  "tidyverse",
+  "haven",
+  "devtools",
+  "RColorBrewer",
+  "data.table",
+  "ggplot2")
+)
+
+check.pkg = function(x){
+  if(!require(x, character.only=T)) install.packages(x, 
+                                                     character.only=T,
+                                                     dependence=T)
+}
+lapply(packages.used, check.pkg)
 library(tidyverse)
 library(haven)
 library(devtools)
@@ -28,6 +43,7 @@ barplot(table(anes_dat$VCF0004),
         las=2,
         main="Number of Respondents Over the Years")
 ```
+From the graph, we see that there are much more respondents in 2012 and 2016 comparing with the respondents in previous years.
 ```{r}
 anes_NAs=anes_dat%>%
   summarise_all(list(na.mean=function(x){
@@ -38,10 +54,32 @@ anes_NAs=data.frame(nas=unlist(t(anes_NAs)))
 ggplot(anes_NAs, aes(x=nas)) +
   geom_histogram(color="black",fill="white",binwidth=0.05)+
   labs(title="Fractions of Missing Values")
-
 ```
 We just want 2016 data
 ```{r}
 dat_2016 <- anes_dat %>% filter(VCF0004 == 2016)
+```
+Filter data that we want:
+```{r}
+anes_use=anes_dat%>%
+  mutate(
+    year=as_factor(VCF0004),
+    econ_past_worse=as_factor(VCF0870),
+    econ_past_better=as_factor(VCF0871),
+    econ_future=as_factor(VCF0872)
+  )%>%
+ 
+
+library(data.table)
+
+data.table(anes_use%>%
+             select(year, turnout, vote, race, gender)%>%
+             filter(!is.na(turnout))%>%
+             sample_n(30))
+
+
+anes_use = anes_use%>%select(year, turnout, vote, race, gender)
+
+save(anes_use, file="../output/data_use.RData")
 ```
 
