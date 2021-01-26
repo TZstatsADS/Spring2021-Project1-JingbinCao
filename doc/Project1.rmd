@@ -44,42 +44,472 @@ barplot(table(anes_dat$VCF0004),
         main="Number of Respondents Over the Years")
 ```
 From the graph, we see that there are much more respondents in 2012 and 2016 comparing with the respondents in previous years.
-```{r}
-anes_NAs=anes_dat%>%
-  summarise_all(list(na.mean=function(x){
-    mean(is.na(x))}))
 
-anes_NAs=data.frame(nas=unlist(t(anes_NAs)))
-
-ggplot(anes_NAs, aes(x=nas)) +
-  geom_histogram(color="black",fill="white",binwidth=0.05)+
-  labs(title="Fractions of Missing Values")
-```
-We just want 2016 data
+Geting all the data that we want:
 ```{r}
-dat_2016 <- anes_dat %>% filter(VCF0004 == 2016)
-```
-Filter data that we want:
-```{r}
+Election_years=as.character(seq(1952, 2016, 4))
 anes_use=anes_dat%>%
   mutate(
     year=as_factor(VCF0004),
-    econ_past_worse=as_factor(VCF0870),
-    econ_past_better=as_factor(VCF0871),
-    econ_future=as_factor(VCF0872)
+    econ_past=as_factor(VCF0871),
+    econ_next=as_factor(VCF0872),
+    econ_gov_market=as_factor(VCF9132),
+    econ_party=as_factor(VCF9205),
+    econ_stock=as_factor(VCF9224),
+    econ_home=as_factor(VCF0146),
+    job_working=as_factor(VCF0150),
+    job_unemp_past=as_factor(VCF9226),
+    job_unemp_next=as_factor(VCF9229),
+    job_foreign=as_factor(VCF9231),
+    secu_tort=as_factor(VCF9233),
+    secu_fed_spend=as_factor(VCF9049),
+    immig_job=as_factor(VCF9223),
+    immig_muslim=as_factor(VCF9267),
+    immig_illeg=as_factor(VCF0233),
+    immig_incre=as_factor(VCF0879),
+    insu_status=as_factor(VCF9281),
+    insu_curr=as_factor(VCF9218),
+    insu_type=as_factor(VCF0806),
+    insu_demo=as_factor(VCF0508),
+    insu_rep=as_factor(VCF0509),
+    weal_wastetax=as_factor(VCF0606),
+    weal_gap=as_factor(VCF9228),
+    weal_rich=as_factor(VCF9268),
+    intera_army=as_factor(VCF0844),
+    lead_demo=as_factor(VCF9209),
+    lead_rep=as_factor(VCF9213),
+    court_perf=as_factor(VCF0655),
+    envir_regul=as_factor(VCF0842),
+    envir_party=as_factor(VCF9008),
+    envir_fedspend=as_factor(VCF9047),
+    trust_first=as_factor(VCF0632),
+    trust_second=as_factor(VCF0633),
+    trust_third=as_factor(VCF0634),
+    satisf=as_factor(VCF9245),
+    vote=as_factor(VCF0706),
+    race=as_factor(VCF0105a),
+    gender=as_factor(VCF0104)
   )%>%
- 
+  filter(year %in% Election_years)
 
-library(data.table)
-
-data.table(anes_use%>%
-             select(year, turnout, vote, race, gender)%>%
-             filter(!is.na(turnout))%>%
-             sample_n(30))
-
-
-anes_use = anes_use%>%select(year, turnout, vote, race, gender)
-
+anes_use = anes_use%>%select(year, 
+                             econ_past, econ_next, econ_gov_market, econ_party,econ_stock,econ_home,
+                            job_working,job_unemp_past,job_unemp_next,job_foreign,
+                            secu_tort,secu_fed_spend,
+                            immig_job,immig_muslim,immig_illeg,immig_incre,
+                            insu_status,insu_curr,insu_type,insu_demo,insu_rep,
+                            weal_wastetax,weal_gap,
+                            intera_army,
+                            lead_demo,lead_rep,
+                            court_perf,
+                            trust_first, trust_second, trust_third,
+                            envir_regul,envir_party,envir_fedspend,
+                            satisf,
+                            vote, race, gender)
 save(anes_use, file="../output/data_use.RData")
 ```
 
+
+Getting 2016 data only:
+```{r}
+load(file="../output/data_use.RData")
+dat_2016 <- anes_dat %>% filter(VCF0004 == 2016)
+
+dat_2016 =dat_2016%>%
+  mutate(
+    year=as_factor(VCF0004),
+    econ_past=as_factor(VCF0871),
+    econ_next=as_factor(VCF0872),
+    econ_gov_market=as_factor(VCF9132),
+    econ_party=as_factor(VCF9205),
+    econ_stock=as_factor(VCF9224),
+    econ_home=as_factor(VCF0146),
+    job_working=as_factor(VCF0150),
+    job_unemp_past=as_factor(VCF9226),
+    job_unemp_next=as_factor(VCF9229),
+    job_foreign=as_factor(VCF9231),
+    secu_tort=as_factor(VCF9233),
+    secu_fed_spend=as_factor(VCF9049),
+    immig_job=as_factor(VCF9223),
+    immig_muslim=as_factor(VCF9267),
+    immig_illeg=as_factor(VCF0233),
+    immig_incre=as_factor(VCF0879),
+    insu_status=as_factor(VCF9281),
+    insu_curr=as_factor(VCF9218),
+    insu_type=as_factor(VCF0806),
+    insu_demo=as_factor(VCF0508),
+    insu_rep=as_factor(VCF0509),
+    weal_wastetax=as_factor(VCF0606),
+    weal_gap=as_factor(VCF9228),
+    weal_rich=as_factor(VCF9268),
+    intera_army=as_factor(VCF0844),
+    lead_demo=as_factor(VCF9209),
+    lead_rep=as_factor(VCF9213),
+    court_perf=as_factor(VCF0655),
+    envir_regul=as_factor(VCF0842),
+    envir_party=as_factor(VCF9008),
+    envir_fedspend=as_factor(VCF9047),
+    trust_first=as_factor(VCF0632),
+    trust_second=as_factor(VCF0633),
+    trust_third=as_factor(VCF0634),
+    satisf=as_factor(VCF9245),
+    vote=as_factor(VCF0706),
+    race=as_factor(VCF0105a),
+    gender=as_factor(VCF0104)
+  )%>%
+  filter(year %in% Election_years)
+dat_2016 = dat_2016 %>%select(year, 
+                             econ_past, econ_next, econ_gov_market, econ_party,econ_stock,econ_home,
+                            job_working,job_unemp_past,job_unemp_next,job_foreign,
+                            secu_tort,secu_fed_spend,
+                            immig_job,immig_muslim,immig_illeg,immig_incre,
+                            insu_status,insu_curr,insu_type,insu_demo,insu_rep,
+                            weal_wastetax,weal_gap,
+                            intera_army,
+                            lead_demo,lead_rep,
+                            court_perf,
+                            trust_first, trust_second, trust_third,
+                            envir_regul,envir_party,envir_fedspend,
+                            satisf,
+                            vote, race, gender)
+save(dat_2016, file="../output/dat_2016.RData")
+```
+
+Load data
+```{r}
+load(file="../output/dat_2016.RData")
+load(file="../output/data_use.RData")
+```
+
+1. Economy
+```{r}
+# 1.1Past
+econ_past_hist = anes_use %>%
+  filter(!is.na(econ_past))  %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(econ_past) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+ 
+
+ggplot(econ_past_hist,
+       aes(x=year, y=prop, fill=econ_past))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 0))+
+  scale_fill_brewer(palette="Blues")+
+  labs(title="How much economy better or worse last year?")
+  
+econ_past_2016 = dat_2016 %>%
+  filter(!is.na(econ_past) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(econ_past) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(econ_past_2016,
+       aes(x=prop, y=year, fill=econ_past))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 0))+
+  scale_fill_brewer(palette="Blues")+
+  labs(title="How much economy better or worse last year?")
+
+# 1.2Future
+econ_next_2016 = dat_2016 %>%
+  filter(!is.na(econ_next) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(econ_next) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(econ_next_2016,
+       aes(x=prop, y=year, fill=econ_next))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 0))+
+  scale_fill_brewer(palette="Blues")+
+  labs(title="How much economy better or worse next year?")
+
+# 2.Goverment control or Freemarket?
+
+econ_gov_mar_2016 = dat_2016 %>%
+  filter(!is.na(econ_gov_market) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(econ_gov_market) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(econ_gov_mar_2016,
+       aes(x=prop, y=year, fill=econ_gov_market))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 0))+
+  scale_fill_brewer(palette="Blues")+
+  labs(title="Government can handel economy or freemarket handel?")
+
+# 3.Which party can handel economy
+
+econ_party_2016 = dat_2016 %>%
+  filter(!is.na(econ_party) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(econ_party) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(econ_party_2016,
+       aes(x=prop, y=year, fill=econ_party))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="Which party would do a better job handeling national economy?")
+
+# 4.Invest in stock market?
+econ_stock_2016 = dat_2016 %>%
+  filter(!is.na(econ_stock) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(econ_stock) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(econ_stock_2016,
+       aes(x=prop, y=year, fill=econ_stock))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="Do you invest in stock market?")
+
+# 5.Own home?
+econ_home_2016 = dat_2016 %>%
+  filter(!is.na(econ_home) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(econ_home) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+
+ggplot(econ_home_2016,
+       aes(x=prop, y=year, fill=econ_home))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="Do you own home?")
+```
+
+2. Jobs
+```{r}
+# 1.Current working status
+job_working_2016 = dat_2016 %>%
+  filter(!is.na(job_working) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(job_working) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(job_working_2016,
+       aes(x=prop, y=year, fill=job_working))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="?")
+
+
+# 2. Level of unemployment last year
+job_unemp_past_2016 = dat_2016 %>%
+  filter(!is.na(job_unemp_past) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(job_unemp_past) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(job_unemp_past_2016,
+       aes(x=prop, y=year, fill=job_unemp_past))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="Rate of umployment last year?")
+
+# 3. Level of unemployment next year
+job_unemp_next_2016 = dat_2016 %>%
+  filter(!is.na(job_unemp_next) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(job_unemp_next) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(job_unemp_next_2016,
+       aes(x=prop, y=year, fill=job_unemp_next))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="Rate of umployment next year?")
+
+# 4. New limits on foreign imports
+job_foreign_2016 = dat_2016 %>%
+  filter(!is.na(job_foreign) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(job_foreign) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(job_foreign_2016,
+       aes(x=prop, y=year, fill=job_foreign))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="Rate of umployment next year?")
+```
+3. Immigrations
+```{r}
+#1. Immigration took jobs
+immig_job_2016 = dat_2016 %>%
+  filter(!is.na(immig_job) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(immig_job) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+
+ggplot(immig_job_2016,
+       aes(x=prop, y=year, fill=immig_job))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="How likely new immigrants will take jobs from the people already here?")
+
+
+# 2. Muslim Thermometer
+immig_muslim_2016_demo = dat_2016 %>%
+  filter(!is.na(immig_muslim) ) %>%
+  filter(vote == "1. Democrat") %>%
+  count(immig_muslim) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+  
+ggplot(data=immig_muslim_2016_demo)+
+geom_point(mapping = aes(x=immig_muslim, y=prop))+
+theme(axis.text.x = element_text(angle = 90))+
+  labs(title="Muslim Thermometer from the people who voted for democratic")
+
+immig_muslim_2016_rep = dat_2016 %>%
+  filter(!is.na(immig_muslim) ) %>%
+  filter(vote == "2. Republican") %>%
+  count(immig_muslim) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(data=immig_muslim_2016_rep)+
+geom_point(mapping = aes(x=immig_muslim, y=prop))+
+theme(axis.text.x = element_text(angle = 90))+
+  labs(title="Muslim Thermometer from the people who voted for republican")
+
+#3.Illegal Immigration Theometer
+immig_illeg_2016_demo = dat_2016 %>%
+  filter(!is.na(immig_illeg) ) %>%
+  filter(vote == "1. Democrat") %>%
+  count(immig_illeg) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(data=immig_illeg_2016_demo)+
+  geom_point(mapping = aes(x=immig_illeg, y=prop))+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(title="Illegal Immigration Thermometer from the people who voted for democratic")
+
+immig_illeg_2016_rep = dat_2016 %>%
+  filter(!is.na(immig_illeg) ) %>%
+  filter(vote == "2. Republican") %>%
+  count(immig_illeg) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+ggplot(data=immig_illeg_2016_rep)+
+geom_point(mapping = aes(x=immig_illeg, y=prop))+
+theme(axis.text.x = element_text(angle = 90))+
+  labs(title="Illegal Immigration Thermometer from the people who voted for republican")
+
+#4. Increasing Immigration
+immig_incre_2016 = dat_2016 %>%
+  filter(!is.na(immig_incre) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(immig_incre) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
+
+ggplot(immig_incre_2016,
+       aes(x=prop, y=year, fill=immig_incre))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="Increase or decrease number of immigrant to the U.S.?")
+```
+
+
+
+
+
+
+Notes:
+unemplyment relates to economy in general

@@ -1,7 +1,9 @@
-Jobs and the economy: VCF0870, 0871, 0872, 9009, 9132(*), 9205(*)
+Economy: VCF0870, 0871, 0872, 9132(*), 9205(*), 9224, 0146
+Job: 9225~9231, 0150
 Trump’s tax returns, Clinton’s emails
-Race in America VCF0104, VCF0105a, VCF0105b, VCF0105C
-“Securing America”
+Race in America VCF0104(gender), VCF0105a, VCF0105b, VCF0105C
+“Securing America” VCF9232, 9233, 9049
+
 Mutual acceptance
 
 Entitlements & debt
@@ -15,22 +17,33 @@ Fitness for Office
 The 2005 Trump tape
 Trump's temperament
 Clinton's private email server
+
+
 Healthcare (Insurance) VCF9281, VCF9218, VCF0806, VCF0508 v.s. VCF0509
-Islamophobia
+Islamophobia (securing america)
 Muslim immigration ban VCF9267,
 Public vs. private policy positions
-Taxes and the wealthy VCF0606
+Taxes and the wealthy VCF0606, 9227, 9228
+
 Trump's tax returns
-Humanitarian crisis in Syria
+
+Humanitarian crisis in Syria VCF0844
 Assad regime in Syria
-Being "devoted to all" Americans as president
-Discipline and leadership
-Supreme Court
-Energy policy and fossil fuels
-Positive traits of opponent
+Being "devoted to all" Americans as president (Current US President VCF 9217~9222, 9009)
+Discipline and leadership VCF0344, 0356, 0368, 9209, 9213
+Supreme Court 0655, 
+Energy policy and fossil fuels 0842, 9008, 9047, 
+Positive traits of opponent (Democratic: 0350~0361) (Republican: 0362~0373)
 
 
 Satisfied: VCF9245
 
 
-Obama: VCF0346 ~ VCF 0361
+Obama: VCF0346 ~ VCF 0357
+
+General Feeling about both candidates:
+9208, 9207, 9213, 0412, 0413, 
+
+Vote: 0704
+
+
