@@ -1,8 +1,6 @@
 ---
 title: "R Notebook"
-output:
-  html_notebook: default
-  pdf_document: default
+output: html_notebook
 ---
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
@@ -53,7 +51,7 @@ Election_years=as.character(seq(1952, 2016, 4))
 anes_use=anes_dat%>%
   mutate(
     year=as_factor(VCF0004),
-    econ_past=as_factor(VCF0870),
+    econ_past=as_factor(VCF0871),
     econ_next=as_factor(VCF0872),
     econ_gov_market=as_factor(VCF9132),
     econ_party=as_factor(VCF9205),
@@ -61,7 +59,7 @@ anes_use=anes_dat%>%
     econ_home=as_factor(VCF0146),
     job_working=as_factor(VCF0150),
     job_unemp_past=as_factor(VCF9226),
-    job_unemp_next=as_factor(VCF9229),
+    job_unemp_next=as_factor(VCF9230),
     job_foreign=as_factor(VCF9231),
     secu_tort=as_factor(VCF9233),
     secu_fed_spend=as_factor(VCF9049),
@@ -84,18 +82,10 @@ anes_use=anes_dat%>%
     envir_regul=as_factor(VCF0842),
     envir_party=as_factor(VCF9008),
     envir_fedspend=as_factor(VCF9047),
-    trust_first=as_factor(VCF0632),
-    trust_second=as_factor(VCF0633),
-    trust_third=as_factor(VCF0634),
     satisf=as_factor(VCF9245),
-    like_demo=as_factor(VCF9207),
-    like_rep=as_factor(VCF9208),
-    demo_rep=as_factor(VCF0413),
-    prefer=as_factor(VCF9022),
     vote=as_factor(VCF0706),
     race=as_factor(VCF0105a),
-    gender=as_factor(VCF0104),
-    income=as_factor(VCF0114)
+    gender=as_factor(VCF0104)
   )%>%
   filter(year %in% Election_years)
 
@@ -109,13 +99,9 @@ anes_use = anes_use%>%select(year,
                             intera_army,
                             lead_demo,lead_rep,
                             court_perf,
-                            trust_first, trust_second, trust_third,
                             envir_regul,envir_party,envir_fedspend,
-                            like_demo, like_rep,
-                            prefer,
-                            demo_rep,
                             satisf,
-                            vote, race, gender,income)
+                            vote, race, gender)
 save(anes_use, file="../output/data_use.RData")
 ```
 
@@ -128,7 +114,7 @@ dat_2016 <- anes_dat %>% filter(VCF0004 == 2016)
 dat_2016 =dat_2016%>%
   mutate(
     year=as_factor(VCF0004),
-    econ_past=as_factor(VCF0870),
+    econ_past=as_factor(VCF0871),
     econ_next=as_factor(VCF0872),
     econ_gov_market=as_factor(VCF9132),
     econ_party=as_factor(VCF9205),
@@ -159,18 +145,10 @@ dat_2016 =dat_2016%>%
     envir_regul=as_factor(VCF0842),
     envir_party=as_factor(VCF9008),
     envir_fedspend=as_factor(VCF9047),
-    trust_first=as_factor(VCF0632),
-    trust_second=as_factor(VCF0633),
-    trust_third=as_factor(VCF0634),
-    like_demo=as_factor(VCF9207),
-    like_rep=as_factor(VCF9208),
-    demo_rep=as_factor(VCF0413),
-    prefer=as_factor(VCF9022),
     satisf=as_factor(VCF9245),
     vote=as_factor(VCF0706),
     race=as_factor(VCF0105a),
-    gender=as_factor(VCF0104),
-    income=as_factor(VCF0114)
+    gender=as_factor(VCF0104)
   )%>%
   filter(year %in% Election_years)
 dat_2016 = dat_2016 %>%select(year, 
@@ -183,13 +161,9 @@ dat_2016 = dat_2016 %>%select(year,
                             intera_army,
                             lead_demo,lead_rep,
                             court_perf,
-                            trust_first, trust_second, trust_third,
                             envir_regul,envir_party,envir_fedspend,
-                            like_demo, like_rep,
-                            prefer,
-                            demo_rep,
                             satisf,
-                            vote, race, gender,income)
+                            vote, race, gender)
 save(dat_2016, file="../output/dat_2016.RData")
 ```
 
@@ -242,27 +216,6 @@ ggplot(econ_past_2016,
   labs(title="How much economy better or worse last year?")
 
 # 1.2Future
-
-econ_next_hist = anes_use %>%
-  filter(!is.na(econ_next))  %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(econ_next) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
- 
-ggplot(econ_next_hist,
-       aes(x=year, y=prop, fill=econ_next))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 0))+
-  scale_fill_brewer(palette="Blues")+
-  labs(title="How much economy better or worse next year?")
-
-
 econ_next_2016 = dat_2016 %>%
   filter(!is.na(econ_next) ) %>%
   filter(vote == "1. Democrat" | vote == "2. Republican") %>%
@@ -343,26 +296,6 @@ ggplot(econ_stock_2016,
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Do you invest in stock market?")
 
-econ_stock_hist = anes_use %>%
-  filter(!is.na(econ_stock))  %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(econ_stock) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
- 
-
-ggplot(econ_stock_hist,
-       aes(x=year, y=prop, fill=econ_stock))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 0))+
-  scale_fill_brewer(palette="Blues")+
-  labs(title="Do you invest in stock market?")
-
 # 5.Own home?
 econ_home_2016 = dat_2016 %>%
   filter(!is.na(econ_home) ) %>%
@@ -383,29 +316,6 @@ ggplot(econ_home_2016,
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Do you own home?")
-
-
-econ_home_hist = anes_use %>%
-  filter(!is.na(econ_home))  %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(econ_home) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
- 
-
-ggplot(econ_home_hist,
-       aes(x=year, y=prop, fill=econ_home))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 0))+
-  scale_fill_brewer(palette="Blues")+
-  labs(title="Do you own home?")
-
-
 ```
 
 2. Jobs
@@ -427,7 +337,7 @@ ggplot(job_working_2016,
   facet_wrap(~vote,ncol=1) +
   theme_bw()+
   theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Current working status of people who voted.")
+  labs(title="?")
 
 
 # 2. Level of unemployment last year
@@ -488,9 +398,9 @@ ggplot(job_foreign_2016,
   theme_bw()+
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Should U.S. government have new limits on foreign imports \n in order to protect job market?")
+  labs(title="Rate of umployment next year?")
 ```
-3. Immigration
+3. Immigrations
 ```{r}
 #1. Immigration took jobs
 immig_job_2016 = dat_2016 %>%
@@ -587,201 +497,6 @@ ggplot(immig_incre_2016,
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Increase or decrease number of immigrant to the U.S.?")
 ```
-
-4. Tax
-```{r}
-# 1.Waste tax
-weal_wastetax_2016 = dat_2016 %>%
-  filter(!is.na(weal_wastetax) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(weal_wastetax) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(weal_wastetax_2016,
-       aes(x=prop, y=year, fill=weal_wastetax))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  scale_fill_brewer(palette="Blues")+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="How much does the Federal Government waste tax money?")
-
-# 2.Wealth gap
-weal_gap_2016 = dat_2016 %>%
-  filter(!is.na(weal_gap) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(weal_gap) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(weal_gap_2016,
-       aes(x=prop, y=year, fill=weal_gap))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  scale_fill_brewer(palette="Blues")+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Is there smaller or larger income gaps \n between poor and wealthy people in the U.S. than 20 years ago?")
-
-
-```
-Candidates
-```{r}
-# 1. Demo Leadership
-
-lead_demo_hist = anes_use %>%
-  filter(!is.na(lead_demo) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(lead_demo) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(lead_demo_hist,
-       aes(x=prop, y=year, fill=lead_demo))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  scale_fill_brewer(palette="Blues")+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Leadership of Democratic Candidate?")
-
-# 2. Rep Leadership
-
-lead_rep_hist = anes_use %>%
-  filter(!is.na(lead_rep) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(lead_rep) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(lead_rep_hist,
-       aes(x=prop, y=year, fill=lead_rep))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  scale_fill_brewer(palette="Blues")+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Leadership of Republican Candidate?")
-
-# 3. Like Demo 
-like_demo_hist = anes_use %>%
-  filter(!is.na(like_demo) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(like_demo) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(like_demo_hist,
-       aes(x=prop, y=year, fill=like_demo))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Do you like Democratic Candidate?")
-
-# 4. Like Rep
-
-like_rep_hist = anes_use %>%
-  filter(!is.na(like_rep) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(like_rep) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(like_rep_hist,
-       aes(x=prop, y=year, fill=like_rep))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Do you like Republican Candidate?")
-
-# 5. Would you prefer the candidate you voted?
-
-prefer_hist = anes_use %>%
-  filter(!is.na(prefer) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(prefer) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(prefer_hist,
-       aes(x=prop, y=year, fill=prefer))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  scale_fill_brewer(palette="Blues")+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Would you prefer the candidate you voted?")
-```
-
-6. Environment
-```{r}
-# 1. Environment regulation
-envir_regul_2016 = dat_2016 %>%
-  filter(!is.na(envir_fedspend) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(envir_fedspend) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(envir_regul_2016,
-       aes(x=prop, y=year, fill=envir_fedspend))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  scale_fill_brewer(palette="Blues")+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Should federal spending on improving and protecting the environment?")
-```
-7. Income
-```{r}
-
-income_2016 = dat_2016 %>%
-  filter(!is.na(income) ) %>%
-  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
-  group_by(year, vote) %>%
-  count(income) %>%
-  group_by(year, vote) %>%
-  mutate(
-    prop = n/sum(n)
-  )
-
-ggplot(income_2016,
-       aes(x=prop, y=year, fill=income))+
-  geom_bar(stat="identity",colour="black")+
-  facet_wrap(~vote,ncol=1) +
-  theme_bw()+
-  scale_fill_brewer(palette="Blues")+
-  theme(axis.text.x = element_text(angle = 0))+
-  labs(title="Income Group")
-```
-
 
 
 
