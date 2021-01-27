@@ -3,6 +3,7 @@
 ## Project 1: A "data story" on how Americans vote
 
 <img src="figs/title1.jpeg" width="500">
+<img src="1fb7ef0093d946a3a23cbb9dccdda5f6_th.gif" width="300">
 
 ### [Project Description](doc/)
 
