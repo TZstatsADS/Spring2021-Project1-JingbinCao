@@ -2,5 +2,5 @@
 
 ### Output folder
 
-The output directory contains analysis output, processed datasets, logs, or other processed things.
+After data manipulation, I named all the historical data that we will use as "anes_use," and the useful data from 2016 as "dat_2016."
 
