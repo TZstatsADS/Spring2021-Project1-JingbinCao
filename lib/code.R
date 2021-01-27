@@ -1,23 +1,11 @@
----
-title: "R Notebook"
-output:
-  html_notebook: default
-  pdf_document: default
----
-
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
-```{r load libraries, warning=FALSE, message=FALSE, include=FALSE}
 packages.used=as.list(
   c(
-  "tidyverse",
-  "haven",
-  "devtools",
-  "RColorBrewer",
-  "data.table",
-  "ggplot2")
+    "tidyverse",
+    "haven",
+    "devtools",
+    "RColorBrewer",
+    "data.table",
+    "ggplot2")
 )
 
 check.pkg = function(x){
@@ -32,23 +20,17 @@ library(devtools)
 library(RColorBrewer)
 library(DT)
 library(ggplot2)
-```
-Import dataset, named as "anes_dat." Then check the dimension.
-```{r}
+
 anes_dat <- 
   read_sav("C:/Users/Jingbin Cao/Documents/GitHub/Spring2021-Project1-JingbinCao/data/anes_timeseries_cdf.sav")
 dim(anes_dat)
-```
-Some basic summaries:
-```{r}
+
+
+
 barplot(table(anes_dat$VCF0004),
         las=2,
         main="Number of Respondents Over the Years")
-```
-From the graph, we see that there are much more respondents in 2012 and 2016 comparing with the respondents in previous years.
 
-Geting all the data that we want:
-```{r}
 Election_years=as.character(seq(1952, 2016, 4))
 anes_use=anes_dat%>%
   mutate(
@@ -101,27 +83,23 @@ anes_use=anes_dat%>%
 
 anes_use = anes_use%>%select(year, 
                              econ_past, econ_next, econ_gov_market, econ_party,econ_stock,econ_home,
-                            job_working,job_unemp_past,job_unemp_next,job_foreign,
-                            secu_tort,secu_fed_spend,
-                            immig_job,immig_muslim,immig_illeg,immig_incre,
-                            insu_status,insu_curr,insu_type,insu_demo,insu_rep,
-                            weal_wastetax,weal_gap,
-                            intera_army,
-                            lead_demo,lead_rep,
-                            court_perf,
-                            trust_first, trust_second, trust_third,
-                            envir_regul,envir_party,envir_fedspend,
-                            like_demo, like_rep,
-                            prefer,
-                            demo_rep,
-                            satisf,
-                            vote, race, gender,income)
+                             job_working,job_unemp_past,job_unemp_next,job_foreign,
+                             secu_tort,secu_fed_spend,
+                             immig_job,immig_muslim,immig_illeg,immig_incre,
+                             insu_status,insu_curr,insu_type,insu_demo,insu_rep,
+                             weal_wastetax,weal_gap,
+                             intera_army,
+                             lead_demo,lead_rep,
+                             court_perf,
+                             trust_first, trust_second, trust_third,
+                             envir_regul,envir_party,envir_fedspend,
+                             like_demo, like_rep,
+                             prefer,
+                             demo_rep,
+                             satisf,
+                             vote, race, gender,income)
 save(anes_use, file="../output/data_use.RData")
-```
 
-
-Getting 2016 data only:
-```{r}
 load(file="../output/data_use.RData")
 dat_2016 <- anes_dat %>% filter(VCF0004 == 2016)
 
@@ -174,33 +152,27 @@ dat_2016 =dat_2016%>%
   )%>%
   filter(year %in% Election_years)
 dat_2016 = dat_2016 %>%select(year, 
-                             econ_past, econ_next, econ_gov_market, econ_party,econ_stock,econ_home,
-                            job_working,job_unemp_past,job_unemp_next,job_foreign,
-                            secu_tort,secu_fed_spend,
-                            immig_job,immig_muslim,immig_illeg,immig_incre,
-                            insu_status,insu_curr,insu_type,insu_demo,insu_rep,
-                            weal_wastetax,weal_gap,
-                            intera_army,
-                            lead_demo,lead_rep,
-                            court_perf,
-                            trust_first, trust_second, trust_third,
-                            envir_regul,envir_party,envir_fedspend,
-                            like_demo, like_rep,
-                            prefer,
-                            demo_rep,
-                            satisf,
-                            vote, race, gender,income)
+                              econ_past, econ_next, econ_gov_market, econ_party,econ_stock,econ_home,
+                              job_working,job_unemp_past,job_unemp_next,job_foreign,
+                              secu_tort,secu_fed_spend,
+                              immig_job,immig_muslim,immig_illeg,immig_incre,
+                              insu_status,insu_curr,insu_type,insu_demo,insu_rep,
+                              weal_wastetax,weal_gap,
+                              intera_army,
+                              lead_demo,lead_rep,
+                              court_perf,
+                              trust_first, trust_second, trust_third,
+                              envir_regul,envir_party,envir_fedspend,
+                              like_demo, like_rep,
+                              prefer,
+                              demo_rep,
+                              satisf,
+                              vote, race, gender,income)
 save(dat_2016, file="../output/dat_2016.RData")
-```
 
-Load data
-```{r}
 load(file="../output/dat_2016.RData")
 load(file="../output/data_use.RData")
-```
 
-1. Economy
-```{r}
 # 1.1Past
 econ_past_hist = anes_use %>%
   filter(!is.na(econ_past))  %>%
@@ -211,7 +183,7 @@ econ_past_hist = anes_use %>%
   mutate(
     prop = n/sum(n)
   )
- 
+
 
 ggplot(econ_past_hist,
        aes(x=year, y=prop, fill=econ_past))+
@@ -221,7 +193,7 @@ ggplot(econ_past_hist,
   theme(axis.text.x = element_text(angle = 0))+
   scale_fill_brewer(palette="Blues")+
   labs(title="How much economy better or worse last year?")
-  
+
 econ_past_2016 = dat_2016 %>%
   filter(!is.na(econ_past) ) %>%
   filter(vote == "1. Democrat" | vote == "2. Republican") %>%
@@ -252,7 +224,7 @@ econ_next_hist = anes_use %>%
   mutate(
     prop = n/sum(n)
   )
- 
+
 ggplot(econ_next_hist,
        aes(x=year, y=prop, fill=econ_next))+
   geom_bar(stat="identity",colour="black")+
@@ -352,7 +324,7 @@ econ_stock_hist = anes_use %>%
   mutate(
     prop = n/sum(n)
   )
- 
+
 
 ggplot(econ_stock_hist,
        aes(x=year, y=prop, fill=econ_stock))+
@@ -394,7 +366,7 @@ econ_home_hist = anes_use %>%
   mutate(
     prop = n/sum(n)
   )
- 
+
 
 ggplot(econ_home_hist,
        aes(x=year, y=prop, fill=econ_home))+
@@ -405,11 +377,7 @@ ggplot(econ_home_hist,
   scale_fill_brewer(palette="Blues")+
   labs(title="Do you own home?")
 
-
-```
-
-2. Jobs
-```{r}
+#Job
 # 1.Current working status
 job_working_2016 = dat_2016 %>%
   filter(!is.na(job_working) ) %>%
@@ -489,9 +457,8 @@ ggplot(job_foreign_2016,
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Should U.S. government have new limits on foreign imports \n in order to protect job market?")
-```
-3. Immigration
-```{r}
+
+#Immigration
 #1. Immigration took jobs
 immig_job_2016 = dat_2016 %>%
   filter(!is.na(immig_job) ) %>%
@@ -522,10 +489,10 @@ immig_muslim_2016_demo = dat_2016 %>%
   mutate(
     prop = n/sum(n)
   )
-  
+
 ggplot(data=immig_muslim_2016_demo)+
-geom_point(mapping = aes(x=immig_muslim, y=prop))+
-theme(axis.text.x = element_text(angle = 90))+
+  geom_point(mapping = aes(x=immig_muslim, y=prop))+
+  theme(axis.text.x = element_text(angle = 90))+
   labs(title="Muslim Thermometer from the people who voted for democratic")
 
 immig_muslim_2016_rep = dat_2016 %>%
@@ -537,8 +504,8 @@ immig_muslim_2016_rep = dat_2016 %>%
   )
 
 ggplot(data=immig_muslim_2016_rep)+
-geom_point(mapping = aes(x=immig_muslim, y=prop))+
-theme(axis.text.x = element_text(angle = 90))+
+  geom_point(mapping = aes(x=immig_muslim, y=prop))+
+  theme(axis.text.x = element_text(angle = 90))+
   labs(title="Muslim Thermometer from the people who voted for republican")
 
 #3.Illegal Immigration Theometer
@@ -563,8 +530,8 @@ immig_illeg_2016_rep = dat_2016 %>%
     prop = n/sum(n)
   )
 ggplot(data=immig_illeg_2016_rep)+
-geom_point(mapping = aes(x=immig_illeg, y=prop))+
-theme(axis.text.x = element_text(angle = 90))+
+  geom_point(mapping = aes(x=immig_illeg, y=prop))+
+  theme(axis.text.x = element_text(angle = 90))+
   labs(title="Illegal Immigration Thermometer from the people who voted for republican")
 
 #4. Increasing Immigration
@@ -586,10 +553,8 @@ ggplot(immig_incre_2016,
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Increase or decrease number of immigrant to the U.S.?")
-```
 
-4. Tax
-```{r}
+#Tax
 # 1.Waste tax
 weal_wastetax_2016 = dat_2016 %>%
   filter(!is.na(weal_wastetax) ) %>%
@@ -630,10 +595,7 @@ ggplot(weal_gap_2016,
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Is there smaller or larger income gaps \n between poor and wealthy people in the U.S. than 20 years ago?")
 
-
-```
-Candidates
-```{r}
+#Candidates
 # 1. Demo Leadership
 
 lead_demo_hist = anes_use %>%
@@ -735,10 +697,8 @@ ggplot(prefer_hist,
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Would you prefer the candidate you voted?")
-```
 
-6. Environment
-```{r}
+#Environment
 # 1. Environment regulation
 envir_regul_2016 = dat_2016 %>%
   filter(!is.na(envir_fedspend) ) %>%
@@ -758,10 +718,8 @@ ggplot(envir_regul_2016,
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Should federal spending on improving and protecting the environment?")
-```
-7. Income
-```{r}
 
+#Income
 income_2016 = dat_2016 %>%
   filter(!is.na(income) ) %>%
   filter(vote == "1. Democrat" | vote == "2. Republican") %>%
@@ -780,11 +738,23 @@ ggplot(income_2016,
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 0))+
   labs(title="Income Group")
-```
 
+#Gender
+income_2016 = dat_2016 %>%
+  filter(!is.na(income) ) %>%
+  filter(vote == "1. Democrat" | vote == "2. Republican") %>%
+  group_by(year, vote) %>%
+  count(income) %>%
+  group_by(year, vote) %>%
+  mutate(
+    prop = n/sum(n)
+  )
 
-
-
-
-Notes:
-unemplyment relates to economy in general
+ggplot(income_2016,
+       aes(x=prop, y=year, fill=income))+
+  geom_bar(stat="identity",colour="black")+
+  facet_wrap(~vote,ncol=1) +
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 0))+
+  labs(title="Income Group")
